@@ -62,7 +62,7 @@ namespace POEWPF_Programming
             AddMessage($"You: {input}");
             chatHistory.Add($"You: {input}");
 
-            input = input.ToLowerInvariant(); // Normalize once
+            input = input.ToLowerInvariant();
 
             if (!nameCaptured)
             {
@@ -85,7 +85,7 @@ namespace POEWPF_Programming
             else
             {
                 HandleUserInput(input);
-                RunCyberQuiz();
+            
             }
 
             UserInputTextBox.Clear();
@@ -126,7 +126,89 @@ namespace POEWPF_Programming
                 RespondToUser(input);
             }
         }
+        private void TakeQuizButton_Click(object sender, RoutedEventArgs e)
+        {
+            RunCyberQuiz(); 
+        }
+        private void RunCyberQuiz()
+        {
+            string fileName = "Quiz game prog6211.txt";
+            if (!File.Exists(fileName))
+            {
+                BotSpeak("Quiz file not found.");
+                return;
+            }
 
+            string[] lines = File.ReadAllLines(fileName);
+            var questions = new List<string>();
+            var optionsList = new List<List<string>>();
+            var correctAnswersList = new List<List<int>>();
+
+            for (int i = 0; i < lines.Length;)
+            {
+                string line = lines[i].Trim();
+                if (string.IsNullOrWhiteSpace(line)) { i++; continue; }
+
+                if (char.IsDigit(line[0]) && line.Contains("."))
+                {
+                    questions.Add(line.Substring(line.IndexOf('.') + 1).Trim());
+                    var options = new List<string>();
+                    var correct = new List<int>();
+                    int j = 1;
+
+                    while (i + j < lines.Length && !string.IsNullOrWhiteSpace(lines[i + j]))
+                    {
+                        string optionLine = lines[i + j].Trim();
+                        if (optionLine.StartsWith(">"))
+                        {
+                            correct.Add(options.Count + 1);
+                            optionLine = optionLine.Substring(1).Trim();
+                        }
+                        options.Add(optionLine);
+                        j++;
+                    }
+
+                    optionsList.Add(options);
+                    correctAnswersList.Add(correct);
+                    i += j;
+                }
+                else { i++; }
+            }
+
+            int score = 0;
+
+            for (int q = 0; q < questions.Count; q++)
+            {
+                string questionBlock = $"\nQuestion {q + 1}: {questions[q]}\n";
+                for (int i = 0; i < optionsList[q].Count; i++)
+                {
+                    questionBlock += $"{i + 1}. {optionsList[q][i]}\n";
+                }
+
+                string input = Microsoft.VisualBasic.Interaction.InputBox(questionBlock + "\nEnter your answer (number):", "Cybersecurity Quiz", "1");
+
+                if (int.TryParse(input, out int selected))
+                {
+                    if (correctAnswersList[q].Contains(selected))
+                    {
+                        BotSpeak("Correct!");
+                        LogActivity($"Answered quiz question {q + 1} correctly.");
+                        score++;
+                    }
+                    else
+                    {
+                        BotSpeak("Incorrect.");
+                        LogActivity($"Answered quiz question {q + 1} incorrectly.");
+                    }
+                }
+                else
+                {
+                    BotSpeak("Invalid input.");
+                }
+            }
+
+            BotSpeak($"Quiz complete! Your score: {score} out of {questions.Count}");
+        }
         // Respond to General User Input
         private void RespondToUser(string input)
         {
@@ -240,86 +322,8 @@ namespace POEWPF_Programming
 ";
             AddMessage(asciiArt);
         }
-
-        private void RunCyberQuiz()
-        {
-            string fileName = "Quiz game prog6211.txt";
-            if (!File.Exists(fileName))
-            {
-                BotSpeak("Quiz file not found.");
-                return;
-            }
-
-            string[] lines = File.ReadAllLines(fileName);
-            var questions = new List<string>();
-            var optionsList = new List<List<string>>();
-            var correctAnswersList = new List<List<int>>();
-
-            for (int i = 0; i < lines.Length;)
-            {
-                string line = lines[i].Trim();
-                if (string.IsNullOrWhiteSpace(line)) { i++; continue; }
-
-                if (char.IsDigit(line[0]) && line.Contains("."))
-                {
-                    questions.Add(line.Substring(line.IndexOf('.') + 1).Trim());
-                    var options = new List<string>();
-                    var correct = new List<int>();
-                    int j = 1;
-
-                    while (i + j < lines.Length && !string.IsNullOrWhiteSpace(lines[i + j]))
-                    {
-                        string optionLine = lines[i + j].Trim();
-                        if (optionLine.StartsWith(">"))
-                        {
-                            correct.Add(options.Count + 1);
-                            optionLine = optionLine.Substring(1).Trim();
-                        }
-                        options.Add(optionLine);
-                        j++;
-                    }
-
-                    optionsList.Add(options);
-                    correctAnswersList.Add(correct);
-                    i += j;
-                }
-                else { i++; }
-            }
-
-            int score = 0;
-
-            for (int q = 0; q < questions.Count; q++)
-            {
-                string questionBlock = $"\nQuestion {q + 1}: {questions[q]}\n";
-                for (int i = 0; i < optionsList[q].Count; i++)
-                {
-                    questionBlock += $"{i + 1}. {optionsList[q][i]}\n";
-                }
-
-                string input = Microsoft.VisualBasic.Interaction.InputBox(questionBlock + "\nEnter your answer (number):", "Cybersecurity Quiz", "1");
-
-                if (int.TryParse(input, out int selected))
-                {
-                    if (correctAnswersList[q].Contains(selected))
-                    {
-                        BotSpeak("Correct!");
-                        LogActivity($"Answered quiz question {q + 1} correctly.");
-                        score++;
-                    }
-                    else
-                    {
-                        BotSpeak("Incorrect.");
-                        LogActivity($"Answered quiz question {q + 1} incorrectly.");
-                    }
-                }
-                else
-                {
-                    BotSpeak("Invalid input.");
-                }
-            }
-
-            BotSpeak($"Quiz complete! Your score: {score} out of {questions.Count}");
-        }
+      
+      
         private void ShowCybersecurityDefinition(string choice)
         {
             string definition = choice switch
