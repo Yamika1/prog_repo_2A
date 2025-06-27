@@ -8,7 +8,7 @@
         Title="Cybersecurity Chatbot, Task Manager"
         Height="700" Width="1000"
         WindowStartupLocation="CenterScreen"
-        Background="MediumPurple">
+   Background="MediumPurple">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -25,13 +25,13 @@
         <!-- Header -->
         <TextBlock Grid.Row="0"
                    Text="Cybersecurity Awareness Chatbot"
-                   FontSize="26"
+                   FontSize="28"
                    FontWeight="Bold"
                    Foreground="White"
                    HorizontalAlignment="Center"
                    Margin="0,0,0,20"/>
 
-        <!-- Chatbot -->
+        <!-- Chatbot Panel -->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -88,14 +88,14 @@
             </ScrollViewer>
         </StackPanel>
 
-        <!-- ASCII Art & Activity Log -->
+        <!-- ASCII Art and Activity Log -->
         <Grid Grid.Row="3" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ASCII Art Display -->
+            <!-- ASCII Art Box -->
             <StackPanel Grid.Column="0" Margin="0,0,10,0">
                 <TextBlock Text="ASCII Art"
                            FontSize="20"
@@ -129,17 +129,15 @@
                          AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"
                          IsReadOnly="True"
-                         Height="180"
+                         Height="140"
                          Background="White"
                          Foreground="Black"/>
 
                 <Button Content="Take Quiz"
-        Width="100"
-        Height="30"
-        Margin="10"
-        Click="TakeQuizButton_Click"/>
-
-
+                        Width="100"
+                        Height="30"
+                        Margin="0,10,0,0"
+                        Click="TakeQuizButton_Click"/>
             </StackPanel>
         </Grid>
     </Grid>
